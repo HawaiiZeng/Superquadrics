@@ -1,3 +1,8 @@
+"""
+This file generates arrays. (see res jpeg)
+Author: Huayi Zeng
+"""
+
 import numpy as np
 import os
 from superquadrics import *
@@ -21,7 +26,7 @@ def shift_transform(dx, dy, x, y):
 
 def produce_superellipsoid_array(dir_save, n_sampled):
     a = [1, 1, 1]
-    n_choice = 8
+    n_choice = 30 # Then the total number will be n_choice * n_choice
     rmax = 10
     rmin = 1
     smax = 10
@@ -42,6 +47,8 @@ def produce_superellipsoid_array(dir_save, n_sampled):
             epsilon = [2/r[i, j], 2/s[i, j], 2/t]
             x, y, z = superellipsoid(epsilon, a, n_sampled)
             # print("largest range: ", np.max([np.max(x), np.max(y), np.max(z)])) # always 1
+            path_save = os.path.join(dir_save, "superellipsoid", "%d_%d.obj" % (i, j))
+            save_obj(path_save, x, y, z)
             dy = -y_cell * i
             dx = -x_cell * j
             x, y = shift_transform(dx, dy, x, y)
@@ -49,6 +56,7 @@ def produce_superellipsoid_array(dir_save, n_sampled):
             y_all.append(y)
             z_all.append(z)
     save_objs(os.path.join(dir_save, "all_superellipsoid.obj"), x_all, y_all, z_all)
+
 
 def produce_supertoroids_array(dir_save, n_sampled):
     a = [2, 2, 2, 2]
@@ -72,6 +80,8 @@ def produce_supertoroids_array(dir_save, n_sampled):
             epsilon = [2/r[i, j], 2/s[i, j]]
             x, y, z = supertoroids(epsilon, a, n_sampled)
             # print("largest range: ", np.max([np.max(x), np.max(y), np.max(z)])) # always 6
+            path_save = os.path.join(dir_save, "supertoroids", "%d_%d.obj" % (i, j))
+            save_obj(path_save, x, y, z)
             dy = -y_cell * i
             dx = -x_cell * j
             x, y = shift_transform(dx, dy, x, y)
@@ -83,5 +93,5 @@ def produce_supertoroids_array(dir_save, n_sampled):
 if __name__ == '__main__':
     dir_save = "res"
     n_sampled = 20
-    # produce_superellipsoid_array(dir_save, n_sampled)
-    produce_supertoroids_array(dir_save, n_sampled)
+    produce_superellipsoid_array(dir_save, n_sampled)
+    # produce_supertoroids_array(dir_save, n_sampled)
