@@ -1,0 +1,1 @@
+This code generates different types of superquadrics
