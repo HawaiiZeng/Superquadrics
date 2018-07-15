@@ -26,11 +26,11 @@ def shift_transform(dx, dy, x, y):
 
 def produce_superellipsoid_array(dir_save, n_sampled):
     a = [1, 1, 1]
-    n_choice = 30 # Then the total number will be n_choice * n_choice
-    rmax = 10
-    rmin = 1
-    smax = 10
-    smin = 1
+    n_choice = 40 # Then the total number will be n_choice * n_choice
+    rmax = 2
+    rmin = 0.5
+    smax = 2
+    smin = 0.5
     t = 2
     dr = (rmax - rmin) / n_choice
     ds = (smax - smin) / n_choice
@@ -49,7 +49,7 @@ def produce_superellipsoid_array(dir_save, n_sampled):
             # print("largest range: ", np.max([np.max(x), np.max(y), np.max(z)])) # always 1
             # path_save = os.path.join(dir_save, "superellipsoid", "%d_%d.obj" % (i, j))
             # save_obj(path_save, x, y, z)
-            path_save = os.path.join(dir_save, "superellipsoid", "%d_%d.pts" % (i, j))
+            path_save = os.path.join(dir_save, "superellipsoid", "el_%d_%d.pts" % (i, j))
             save_pts(path_save, x, y, z)
             dy = -y_cell * i
             dx = -x_cell * j
@@ -62,11 +62,11 @@ def produce_superellipsoid_array(dir_save, n_sampled):
 
 def produce_supertoroids_array(dir_save, n_sampled):
     a = [2, 2, 2, 2]
-    n_choice = 8
-    rmax = 10
-    rmin = 1
-    smax = 10
-    smin = 1
+    n_choice = 40
+    rmax = 2
+    rmin = 0.5
+    smax = 2
+    smin = 0.5
     dr = (rmax - rmin) / n_choice
     ds = (smax - smin) / n_choice
     y = np.linspace(0, n_choice, n_choice + 1)
@@ -84,7 +84,7 @@ def produce_supertoroids_array(dir_save, n_sampled):
             # print("largest range: ", np.max([np.max(x), np.max(y), np.max(z)])) # always 6
             # path_save = os.path.join(dir_save, "supertoroids", "%d_%d.obj" % (i, j))
             # save_obj(path_save, x, y, z)
-            path_save = os.path.join(dir_save, "supertoroids", "%d_%d.pts" % (i, j))
+            path_save = os.path.join(dir_save, "supertoroids", "to_%d_%d.pts" % (i, j))
             save_pts(path_save, x, y, z)
             dy = -y_cell * i
             dx = -x_cell * j
@@ -98,4 +98,4 @@ if __name__ == '__main__':
     dir_save = "res"
     n_sampled = 20
     produce_superellipsoid_array(dir_save, n_sampled)
-    # produce_supertoroids_array(dir_save, n_sampled)
+    produce_supertoroids_array(dir_save, n_sampled)
