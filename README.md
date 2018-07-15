@@ -9,5 +9,5 @@ See Figure 2.6 https://cse.buffalo.edu/~jryde/cse673/files/superquadrics.pdf
 How to run: python3 produce_array.py
 
 Res:
-![Screenshot](superellipsoids.jpeg)
-![Screenshot](supertoroids.jpeg)
+![Screenshot](superellipsoids.png)
+![Screenshot](supertoroids.png)
