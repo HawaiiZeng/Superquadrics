@@ -47,8 +47,10 @@ def produce_superellipsoid_array(dir_save, n_sampled):
             epsilon = [2/r[i, j], 2/s[i, j], 2/t]
             x, y, z = superellipsoid(epsilon, a, n_sampled)
             # print("largest range: ", np.max([np.max(x), np.max(y), np.max(z)])) # always 1
-            path_save = os.path.join(dir_save, "superellipsoid", "%d_%d.obj" % (i, j))
-            save_obj(path_save, x, y, z)
+            # path_save = os.path.join(dir_save, "superellipsoid", "%d_%d.obj" % (i, j))
+            # save_obj(path_save, x, y, z)
+            path_save = os.path.join(dir_save, "superellipsoid", "%d_%d.pts" % (i, j))
+            save_pts(path_save, x, y, z)
             dy = -y_cell * i
             dx = -x_cell * j
             x, y = shift_transform(dx, dy, x, y)
@@ -80,8 +82,10 @@ def produce_supertoroids_array(dir_save, n_sampled):
             epsilon = [2/r[i, j], 2/s[i, j]]
             x, y, z = supertoroids(epsilon, a, n_sampled)
             # print("largest range: ", np.max([np.max(x), np.max(y), np.max(z)])) # always 6
-            path_save = os.path.join(dir_save, "supertoroids", "%d_%d.obj" % (i, j))
-            save_obj(path_save, x, y, z)
+            # path_save = os.path.join(dir_save, "supertoroids", "%d_%d.obj" % (i, j))
+            # save_obj(path_save, x, y, z)
+            path_save = os.path.join(dir_save, "supertoroids", "%d_%d.pts" % (i, j))
+            save_pts(path_save, x, y, z)
             dy = -y_cell * i
             dx = -x_cell * j
             x, y = shift_transform(dx, dy, x, y)

@@ -7,6 +7,14 @@ Author: Huayi Zeng
 
 import numpy as np
 
+def save_pts(path_save, x, y, z):
+    x = x.flatten()
+    y = y.flatten()
+    z = z.flatten()
+    pts = np.zeros((x.shape[0], 3))
+    pts[:, 0], pts[:, 1], pts[:, 2] = x, y, z
+    np.savetxt(path_save, pts, fmt='%1.3f')
+
 def save_obj(path_save, x, y, z, threshold = -1):
     hei, wid = x.shape[0], x.shape[1]
     with open(path_save, "w+") as fout:
