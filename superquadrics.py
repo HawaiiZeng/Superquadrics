@@ -32,6 +32,36 @@ def save_obj(path_save, x, y, z, threshold = -1):
                 for j in range(wid - 1):
                     fout.write("f %d %d %d\n" % ((i + 1) * wid + j + 1, i * wid + j + 1 + 1, i * wid + j + 1))
                     fout.write("f %d %d %d\n" % ((i + 1) * wid + j + 1 + 1, i * wid + j + 1 + 1, (i + 1) * wid + j + 1))
+
+def save_obj_not_overlap(path_save, x, y, z):
+    """
+    This function saves super-ellpsoid w/o overlap: the rightmost vertices are not coincide with the leftmost points,
+    and only one vertex at the top and bottom
+    """
+    x = np.transpose(x, (1, 0))
+    y = np.transpose(y, (1, 0))
+    z = np.transpose(z, (1, 0))
+    hei, wid = x.shape[0], x.shape[1]
+    count = 0
+    with open(path_save, "w+") as fout:
+        for i in range(1, hei - 1):
+            for j in range(0, wid - 1):
+                fout.write("v %.3f %.3f %.3f\n" % (x[i, j], y[i, j], z[i, j]))
+                count += 1
+        for i in range(0, hei - 3):
+            for j in range(0, wid - 2):
+                fout.write("f %d %d %d %d\n" % (i * (wid - 1) + j + 1, i * (wid - 1) + j + 2, (i + 1) * (wid - 1) + j + 2, (i + 1) * (wid - 1) + j + 1))
+        for i in range(0, hei - 3):
+            fout.write("f %d %d %d %d\n" % (i * (wid - 1) + wid - 2 + 1, i * (wid - 1) + 0 + 1, (i + 1) * (wid - 1) + 0 + 1, (i + 1) * (wid - 1) + wid - 2 + 1))
+        fout.write("v %.3f %.3f %.3f\n" % (x[0, 0], y[0, 0], z[0, 0]))
+        fout.write("v %.3f %.3f %.3f\n" % (x[-1, -1], y[-1, -1], z[-1, -1]))
+        for j in range(0, wid - 2):
+            fout.write("f %d %d %d\n" % (count+1, j + 2, j + 1))
+        fout.write("f %d %d %d\n" % (count+1, 1, wid - 2 + 1))
+        for j in range(0, wid - 2):
+            fout.write("f %d %d %d\n" % (count+2, (hei - 3) * (wid - 1) + j + 1, (hei - 3) * (wid - 1) + j + 2))
+        fout.write("f %d %d %d\n" % (count+2, (hei - 3) * (wid - 1) + wid - 3 + 2, (hei - 3) * (wid - 1) + 1))
+
                 
 def sgn(x):
     y = np.ones(x.shape)
@@ -54,18 +84,21 @@ def signed_sec(w, m):
 def get_eta_and_w(n, etamax = np.pi / 2, wmax = np.pi):
     etamin = -etamax
     wmin = -wmax
-    deta = (etamax - etamin) / n
     dw = (wmax - wmin) / n
     # When the range = 2PI, one point will be overlapped
-    y = np.linspace(0, n, n + 1)
     x = np.linspace(0, n, n + 1)
+
+    if etamax == np.pi / 2:
+        n = n - 1
+    y = np.linspace(0, n, n + 1)
+    deta = (etamax - etamin) / n
 
     yv, xv = np.meshgrid(y, x)
     eta = etamin + yv * deta
     w = wmin + xv * dw
     return eta, w
 
-def superellipsoid(epsilon, a, n):
+def superellipsoid(epsilon, a, n, a0=1):
     """
     We follow https://en.wikipedia.org/wiki/Superquadrics, (code there should be superellipsoid)
     a is a 3-element vector: A, B, C
@@ -76,6 +109,7 @@ def superellipsoid(epsilon, a, n):
     x = a[0] * signed_cos(eta, epsilon[0]) * signed_cos(w, epsilon[0])
     y = a[1] * signed_cos(eta, epsilon[1]) * signed_sin(w, epsilon[1])
     z = a[2] * signed_sin(eta, epsilon[2])
+    x, y, z = a0 * x, a0 * y, a0 * z
     return x, y, z
 
 def superhyperboloid_one_piece(epsilon, a, n):
@@ -121,15 +155,19 @@ def superellipsoid_taperingz_blendingx(epsilon, a, a0, t, b, n):
 
 if __name__ == '__main__':
     path_save = "temp.obj"
-    n = 10
+    n = 64
 
     a = [1, 1, 1]
     r = 2
     s = 2
     t = 2
     epsilon = [2/r, 2/s, 2/t]
-    # x, y, z = superellipsoid(epsilon, a, n)
+    x, y, z = superellipsoid(epsilon, a, n)
+    save_obj_not_overlap(path_save, x, y, z)
     # save_obj(path_save, x, y, z)
+    save_pts("/Users/huayizeng/Desktop/temp/qwwq/temp.pts", x, y, z)
+
+    exit(0)
 
     a = [1, 1, 1]
     r = 2
